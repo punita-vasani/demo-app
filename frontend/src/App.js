@@ -57,8 +57,8 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <h1>Test Form Submission</h1>
-        
+
+              <h1>Punita Form Submission</h1>    
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label htmlFor="name">Name:</label>
@@ -84,7 +84,7 @@ function App() {
             />
           </div>
 
-          <div className="form-group">
+         <div className="form-group">
             <label htmlFor="message">Message:</label>
             <textarea
               id="message"
