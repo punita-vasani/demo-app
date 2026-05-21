@@ -8,6 +8,7 @@ function App() {
     email: '',
     message: ''
   });
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
@@ -19,16 +20,39 @@ function App() {
     });
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        'http://13.223.96.59:5001/api/users'
+      );
+
+      if (response.data.success) {
+        setUsers(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSubmitStatus('');
 
     try {
-      const response = await axios.post('http://localhost:5001/api/submit', formData);
+      const response = await axios.post(
+        'http://13.223.96.59:5001/api/submit',
+        formData
+      );
+
       if (response.data.success) {
         setSubmitStatus('Form submitted successfully!');
-        setFormData({ name: '', email: '', message: '' });
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+
         fetchUsers();
       }
     } catch (error) {
@@ -36,17 +60,6 @@ function App() {
       console.error('Error:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('http://localhost:5001/api/users');
-      if (response.data.success) {
-        setUsers(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error);
     }
   };
 
@@ -58,10 +71,13 @@ function App() {
     <div className="App">
       <div className="container">
 
-              <h1>Punita Demo Form Submission</h1>    
+        <h1>Punita Demo Form Submission</h1>
+
         <form onSubmit={handleSubmit} className="form">
+
           <div className="form-group">
             <label htmlFor="name">Name:</label>
+
             <input
               type="text"
               id="name"
@@ -73,7 +89,8 @@ function App() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="Email">Email:</label>
+            <label htmlFor="email">Email:</label>
+
             <input
               type="email"
               id="email"
@@ -84,8 +101,9 @@ function App() {
             />
           </div>
 
-         <div className="form-group">
+          <div className="form-group">
             <label htmlFor="message">Message:</label>
+
             <textarea
               id="message"
               name="message"
@@ -96,33 +114,63 @@ function App() {
             />
           </div>
 
-          <button type="submit" disabled={loading} className="submit-btn">
+          <button
+            type="submit"
+            disabled={loading}
+            className="submit-btn"
+          >
             {loading ? 'Submitting...' : 'Submit'}
           </button>
+
         </form>
 
         {submitStatus && (
-          <div className={`status ${submitStatus.includes('Error') ? 'error' : 'success'}`}>
+          <div
+            className={`status ${
+              submitStatus.includes('Error')
+                ? 'error'
+                : 'success'
+            }`}
+          >
             {submitStatus}
           </div>
         )}
 
         <div className="users-section">
+
           <h2>Submitted Data</h2>
+
           {users.length > 0 ? (
             <div className="users-list">
+
               {users.map((user) => (
                 <div key={user._id} className="user-card">
+
                   <h3>{user.name}</h3>
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Message:</strong> {user.message}</p>
-                  <p><small>Submitted: {new Date(user.createdAt).toLocaleString()}</small></p>
+
+                  <p>
+                    <strong>Email:</strong> {user.email}
+                  </p>
+
+                  <p>
+                    <strong>Message:</strong> {user.message}
+                  </p>
+
+                  <p>
+                    <small>
+                      Submitted:{' '}
+                      {new Date(user.createdAt).toLocaleString()}
+                    </small>
+                  </p>
+
                 </div>
               ))}
+
             </div>
           ) : (
             <p>No submissions yet.</p>
           )}
+
         </div>
       </div>
     </div>
